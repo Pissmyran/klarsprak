@@ -52,6 +52,8 @@ The review queue is at `/admin`. It asks for `ADMIN_TOKEN`.
 
 Turnstile keys are created in the Cloudflare dashboard under **Turnstile → Add site**. Use the same host name as `PUBLIC_HOST`.
 
+The container stops at startup if `ADMIN_TOKEN`, `RATE_LIMIT_KEY`, `TURNSTILE_SECRET` or `TURNSTILE_HOSTNAMES` cannot be passed to the Worker exactly: values cannot contain carriage returns or end with a backslash. They also cannot contain all three quote characters `'`, `"` and `` ` ``, or both `'` and `` ` `` together with a literal `\n` or `\r`.
+
 ### Settings from a file instead
 
 If you do not want values such as passwords in the compose file, put them as `NAME=value` lines in the file `import.env` in the data volume (the one mounted at `/data`) and restart the container. At start the values are saved to `/data/settings.env`, which only the container can read, and `import.env` is deleted. To change a value later, add a new `import.env` with just that line. A line with `NAME=` and no value removes the setting. Values filled in in the compose file take precedence over saved values.

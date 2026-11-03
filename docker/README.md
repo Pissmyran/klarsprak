@@ -50,6 +50,8 @@ Granskningskön finns på `/admin`. Den frågar efter `ADMIN_TOKEN`.
 
 Turnstile-nycklar skapas i Cloudflares instrumentpanel under **Turnstile → Add site**. Ange samma värdnamn som `PUBLIC_HOST`.
 
+Containern stoppar vid start om `ADMIN_TOKEN`, `RATE_LIMIT_KEY`, `TURNSTILE_SECRET` eller `TURNSTILE_HOSTNAMES` inte kan överföras exakt till Workern: värdena får inte innehålla vagnretur eller sluta med ett bakstreck. De får inte heller innehålla alla tre citattecknen `'`, `"` och `` ` ``, eller både `'` och `` ` `` tillsammans med en bokstavlig `\n` eller `\r`.
+
 ### Inställningar från en fil i stället
 
 Vill du inte ha värden som lösenord i compose-filen lägger du dem som `NAMN=värde`-rader i filen `import.env` i datavolymen (den som monteras på `/data`) och startar om containern. Vid starten sparas värdena i `/data/settings.env`, som bara containern kan läsa, och `import.env` raderas. För att ändra ett värde senare lägger du en ny `import.env` med bara den raden. En rad med `NAMN=` och inget värde tar bort inställningen. Värden som är ifyllda i compose-filen gäller före sparade värden.

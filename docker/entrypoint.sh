@@ -5,6 +5,7 @@
 set -eu
 
 # Saved settings from a one-time /data/import.env (see import-settings.sh).
+# shellcheck source=import-settings.sh
 . /opt/app/docker/import-settings.sh
 
 : "${PUBLIC_HOST:=localhost}"
@@ -30,16 +31,12 @@ site=/srv/site
 node /opt/app/tools/render.mjs "$values" "$site" >/dev/null
 cp "$app/docker/wrangler.jsonc" "$site/wrangler.jsonc"
 
-vars=$(mktemp)
-chmod 600 "$vars"
-for name in ADMIN_TOKEN RATE_LIMIT_KEY TURNSTILE_SECRET TURNSTILE_HOSTNAMES; do
-  value=$(printenv "$name" || true)
-  [ -n "$value" ] && printf '%s=%s\n' "$name" "$value" >>"$vars"
-done
+# Wrangler loads .dev.vars without dotenv expansion, unlike --env-file.
+node "$app/docker/write-dev-vars.mjs" "$site/.dev.vars"
 
 cd "$site"
 npx wrangler d1 migrations apply DB --local --persist-to /data
 
 exec npx wrangler dev --local --persist-to /data \
   --ip 0.0.0.0 --port "${PORT:-8787}" \
-  --env-file "$vars" --show-interactive-dev-session=false
+  --show-interactive-dev-session=false
