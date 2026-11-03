@@ -149,16 +149,6 @@ export async function rateLimitIdentity(ip, secret) {
   return `hmac-sha256:${hex}`;
 }
 
-async function isRateLimited(env, identity) {
-  if (!identity) return false;
-  const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
-  const row = await env.DB.prepare(
-    `SELECT COUNT(*) AS n FROM submissions WHERE submitter_ip = ? AND created_at > ?`,
-  )
-    .bind(identity, since)
-    .first();
-  return Number(row?.n || 0) >= RATE_LIMIT_MAX;
-}
 function timingSafeEqual(a, b) {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -251,17 +241,16 @@ async function handleSubmit(request, env) {
   const identity = await rateLimitIdentity(ip, env.RATE_LIMIT_KEY || env.ADMIN_TOKEN);
   if (ip && !identity)
     return json({ error: "Rate limit configuration unavailable." }, { status: 503 });
-  if (await isRateLimited(env, identity))
-    return json(
-      { error: "För många förslag från samma adress. Försök igen om en stund." },
-      { status: 429 },
-    );
-  const now = new Date().toISOString();
-  await env.DB.prepare(
+  const timestamp = Date.now();
+  const now = new Date(timestamp).toISOString();
+  const since = new Date(timestamp - RATE_LIMIT_WINDOW_MS).toISOString();
+  const result = await env.DB.prepare(
     `INSERT INTO submissions
       (term, foreslagen_juridisk_definition, foreslagen_vardagsbetydelse, foreslagen_exempel,
        foreslaget_rattsomrade, inskickare_namn, inskickare_kommentar, status, created_at, submitter_ip)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`,
+     SELECT ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?
+      WHERE ? IS NULL OR
+        (SELECT COUNT(*) FROM submissions WHERE submitter_ip = ? AND created_at > ?) < ?`,
   )
     .bind(
       body.term.trim(),
@@ -273,8 +262,17 @@ async function handleSubmit(request, env) {
       clean(body.inskickare_kommentar),
       now,
       identity,
+      identity,
+      identity,
+      since,
+      RATE_LIMIT_MAX,
     )
     .run();
+  if (!result.meta.changes)
+    return json(
+      { error: "För många förslag från samma adress. Försök igen om en stund." },
+      { status: 429 },
+    );
   return json(
     { ok: true, message: "Tack, ditt förslag granskas innan det publiceras." },
     { status: 201 },
