@@ -7,7 +7,8 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
-const ADDRESS = /[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)/g;
+const LOCAL_PART = /[A-Za-z0-9._%+-]+/g;
+const DOMAIN = /[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/y;
 const RESERVED = /(?:^|\.)(?:example\.(?:com|net|org)|example|test|invalid|localhost)$/i;
 // Package scopes and versions look like addresses but are not.
 const NOT_AN_ADDRESS = /^(?:\d+(?:\.\d+)*|[a-z]+\.(?:js|ts|mjs|json))$/i;
@@ -28,11 +29,20 @@ for (const path of files) {
   }
   if (text.includes("\0")) continue; // binary
   text.split("\n").forEach((line, index) => {
-    for (const match of line.matchAll(ADDRESS)) {
-      if (line[match.index - 1] === ":") continue; // user:password@host in a URL
-      const domain = match[1].replace(/\.$/, "");
+    // Scan each local-part run once and try the domain only at the next character.
+    LOCAL_PART.lastIndex = 0;
+    let local;
+    while ((local = LOCAL_PART.exec(line))) {
+      if (line[LOCAL_PART.lastIndex] !== "@") continue;
+      DOMAIN.lastIndex = LOCAL_PART.lastIndex + 1;
+      const match = DOMAIN.exec(line);
+      if (!match) continue;
+      // Consume the match even when it is ignored, as the original search did.
+      LOCAL_PART.lastIndex = DOMAIN.lastIndex;
+      if (line[local.index - 1] === ":") continue; // user:password@host in a URL
+      const domain = match[0].replace(/\.$/, "");
       if (!RESERVED.test(domain) && !NOT_AN_ADDRESS.test(domain))
-        found.push(`${path}:${index + 1}: ${match[0]}`);
+        found.push(`${path}:${index + 1}: ${local[0]}@${domain}`);
     }
   });
 }
