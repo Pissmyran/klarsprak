@@ -40,6 +40,8 @@ done
 cd "$site"
 npx wrangler d1 migrations apply DB --local --persist-to /data
 
+# Wrangler's local explorer bypasses the Worker's admin authentication.
+export X_LOCAL_EXPLORER=false
 exec npx wrangler dev --local --persist-to /data \
   --ip 0.0.0.0 --port "${PORT:-8787}" \
   --env-file "$vars" --show-interactive-dev-session=false
