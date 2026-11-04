@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Security fixes are made in the latest release only (see [CHANGELOG.md](CHANGELOG.md)). For the Docker image, use the `1` tag or the latest `X.Y.Z` to receive them. If your Compose file pins the image by digest (`:1@sha256:...`), update the digest for each release, because a digest pin does not follow later releases of the tag.
+Security fixes are made in the latest release only (see [CHANGELOG.md](CHANGELOG.md)). For the Docker image, use `latest` or the newest `X.Y.Z` to receive them. If your Compose file pins the image by digest (`:1@sha256:...`), update the digest for each release, because a digest pin does not follow later releases of the tag.
 
 ## Reporting a Vulnerability
 
