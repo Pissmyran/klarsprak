@@ -2,20 +2,8 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Security fixes are made in the latest release only (see [CHANGELOG.md](CHANGELOG.md)). For the Docker image, use the `1` tag or the latest `X.Y.Z` to receive them. If your Compose file pins the image by digest (`:1@sha256:...`), update the digest for each release, because a digest pin does not follow later releases of the tag.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Report security problems privately through the Security tab of this repository (a private security advisory). Do not open a public issue, and never include secrets or tokens in a report.

@@ -46,6 +46,11 @@ Granskningskön finns på `/admin`. Den frågar efter `ADMIN_TOKEN`.
 | `TURNSTILE_SECRET` | För förslag | – | Hemlig nyckel för Turnstile. |
 | `TURNSTILE_HOSTNAMES` | Nej | `PUBLIC_HOST` | Kommaseparerade värdnamn som Turnstile-svaret får komma från. |
 | `RATE_LIMIT_KEY` | Nej | `ADMIN_TOKEN` | Nyckel för att hasha besökares IP-adresser i hastighetsbegränsningen. |
+| `ALIAS_HOST` | Nej | – | Ett andra värdnamn (till exempel en stavning med å, ä eller ö) som skickas vidare till `PUBLIC_HOST`. |
+| `THEME_KEY_PREFIX` | Nej | `klarsprak` | Namnger webbläsarens lagringsnyckel och kaka för temavalet. |
+| `THEME_COOKIE_DOMAIN` | Nej | – | Delar temakakan med syskonsajter under samma överordnade domän. |
+| `SITE_FAMILY` | Nej | `Skog` | Etikett för temat `forest`. |
+| `RELATED_SITE_HTML` | Nej | – | Valfritt HTML-stycke på `/varfor` som pekar på en relaterad sajt. |
 | `PORT` | Nej | `8787` | Porten inne i containern. |
 
 Turnstile-nycklar skapas i Cloudflares instrumentpanel under **Turnstile → Add site**. Ange samma värdnamn som `PUBLIC_HOST`.
@@ -68,8 +73,8 @@ Containern talar vanlig HTTP på port 8787. Lägg den bakom en omvänd proxy som
 ## Teknisk översikt
 
 - **Runtime:** Klarspråk är skrivet som en Cloudflare Worker. I containern körs den i `workerd`, samma runtime som Cloudflare använder, via `wrangler dev --local` (Miniflare). D1-databasen blir en lokal SQLite-fil under `/data/v3/d1/`.
-- **Start:** entrypointen kopierar en skrivskyddad mall till `/srv/klarsprak`, fyller i `PUBLIC_HOST` och Turnstile-nyckeln, kör väntande D1-migreringar och startar servern. Hemligheter skickas till wrangler via en privat env-fil (rättigheter 600) och bakas aldrig in i imagen.
-- **Imagen** bygger på `node:24-trixie-slim` (Node LTS på Debian stable), kör som användaren `node` och har en healthcheck mot `/`. Den innehåller bara källkod med platshållare; dina värden fylls i när containern startar.
+- **Start:** entrypointen renderar källkoden till `/srv/site` med värdena från containerns miljö, kör väntande D1-migreringar och startar servern. Hemligheter skickas till wrangler via en privat env-fil (rättigheter 600) och bakas aldrig in i imagen.
+- **Imagen** bygger på den officiella `node`-imagen, varianten `trixie-slim` (Debian stable). Den exakta Node-versionen anges i `Dockerfile`, så en redan publicerad image kan ligga på en äldre version, kör som användaren `node` och har en healthcheck mot `/`. Den innehåller bara källkod med platshållare; dina värden fylls i när containern startar.
 - **Säkerhet:** svaren får strikt CSP, HSTS och övriga säkerhetshuvuden från appen. Admin-API:t kräver `Authorization: Bearer <ADMIN_TOKEN>`, och tokenet jämförs i konstant tid. Förslag kräver Turnstile och hastighetsbegränsas per hashad IP.
 - **Begränsningar:** `wrangler dev` är en utvecklingsserver som kör en process på en maskin. Det räcker gott för en webbplats med normal trafik, men ger inte Cloudflares automatiska skalning eller globala spridning.
 - **Felsökning:** `docker compose logs -f`. Hälsostatus syns med `docker compose ps`.
