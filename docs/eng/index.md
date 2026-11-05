@@ -46,12 +46,12 @@ The code contains no account details. Wherever a value of your own is needed, su
 
 ## Running with Docker
 
-Klarspråk is available as a ready-made image on Docker Hub, `docker.io/pissmyran/klarsprak`. You do not need to build anything: `docker-compose.yml` names the image like this, and `docker compose up -d` pulls it.
+Klarspråk is available as a ready-made image on Docker Hub, `docker.io/driftaegis/klarsprak`. You do not need to build anything: `docker-compose.yml` names the image like this, and `docker compose up -d` pulls it.
 
 In `docker-compose.yml`:
 
 ```yaml
-    image: docker.io/pissmyran/klarsprak:1
+    image: docker.io/driftaegis/klarsprak:1
 ```
 
 The tag `1` gives every update within version 1; `X.Y` gives only fixes and `X.Y.Z` exactly one version. Every setting is described on the [Docker](docker.md) page, and the changes are listed in [CHANGELOG.md](../../CHANGELOG.md). To build the image yourself from source: `docker build -t klarsprak .` in the repo root.

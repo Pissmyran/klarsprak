@@ -6,7 +6,7 @@ Imagen innehåller hela webbplatsen och de redan publicerade termerna. Du behöv
 
 ## Kom igång
 
-Imagen ligger på Docker Hub som `docker.io/pissmyran/klarsprak`. Compose-filen nedan hämtar den därifrån, så du behöver varken klona repot eller bygga något.
+Imagen ligger på Docker Hub som `docker.io/driftaegis/klarsprak`. Compose-filen nedan hämtar den därifrån, så du behöver varken klona repot eller bygga något.
 
 1. **Installera Docker.** På Windows och Mac: [Docker Desktop](https://www.docker.com/products/docker-desktop/). På Linux: paketet `docker.io` (Debian/Ubuntu) eller motsvarande. Podman fungerar också.
 2. **Skapa en mapp** och en fil i den som heter `docker-compose.yml`. Klistra in innehållet nedan.
@@ -17,7 +17,7 @@ Imagen ligger på Docker Hub som `docker.io/pissmyran/klarsprak`. Compose-filen 
 ```yaml
 services:
   klarsprak:
-    image: docker.io/pissmyran/klarsprak:1
+    image: docker.io/driftaegis/klarsprak:1
     restart: unless-stopped
     ports:
       - "8787:8787"
