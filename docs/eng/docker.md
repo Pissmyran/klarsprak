@@ -8,7 +8,7 @@ The image contains the whole website and the terms already published. You do not
 
 ## Getting started
 
-The image is on Docker Hub as `docker.io/driftaegis/klarsprak`. The compose file below pulls it from there, so you neither clone the repo nor build anything.
+The image is on Docker Hub as `docker.io/pissmyran/klarsprak`. The compose file below pulls it from there, so you neither clone the repo nor build anything.
 
 1. **Install Docker.** On Windows and Mac: [Docker Desktop](https://www.docker.com/products/docker-desktop/). On Linux: the `docker.io` package (Debian/Ubuntu) or equivalent. Podman works too.
 2. **Create a folder** with a file in it named `docker-compose.yml`. Paste the content below.
@@ -19,7 +19,7 @@ The image is on Docker Hub as `docker.io/driftaegis/klarsprak`. The compose file
 ```yaml
 services:
   klarsprak:
-    image: docker.io/driftaegis/klarsprak:1
+    image: docker.io/pissmyran/klarsprak:1
     restart: unless-stopped
     ports:
       - "8787:8787"
