@@ -15,6 +15,7 @@ Båda krävs före push.
 
 ## Regler
 
+- **Arbeta självständigt:** gör uppgiften själv i stället för att lämna tillbaka steg till användaren. Fråga bara om beslut som verkligen är deras. Är något blockerat, säg tydligt vad och varför; säg aldrig åt användaren att göra jobbet eller kontrollera sådant du kan kontrollera själv.
 - **Ingång:** `src/index.js`. Hanterare: fetch. Bindningar: D1, Assets.
 - **API:** publika `/api/terms` och `/api/submit` (Turnstile) och en granskningskö i `/admin` med bearer-token.
 - **Routing:** behåll att Workern går först (`run_worker_first`); den styr värdnamn, admin, SEO och säkerhetshuvuden. `/admin` släpps igenom till de statiska filerna, som serverar `admin.html` där; skriv inte om den till `/admin.html`.
