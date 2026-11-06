@@ -63,7 +63,7 @@ Vill du inte ha värden som lösenord i compose-filen lägger du dem som `NAMN=v
 
 - All data ligger i volymen som är monterad på `/data`: databasen (SQLite) med termer och förslag.
 - **Säkerhetskopiera:** `docker compose stop`, kopiera volymen och kör `docker compose start`. Volymens plats visas med `docker volume inspect <mapp>_klarsprak-data`.
-- **Uppdatera:** `docker compose pull && docker compose up -d`. Databasmigreringar körs automatiskt vid start. Imagen i `docker-compose.yml` är låst med en digest (`@sha256:…`), så `pull` hämtar bara just den versionen. För att uppgradera, byt digesten mot den som `docker buildx imagetools inspect docker.io/pissmyran/klarsprak:1` visar, eller ta bort `@sha256:…` för att följa taggen.
+- **Uppdatera:** `docker compose pull && docker compose up -d`. Databasmigreringar körs automatiskt vid start. Imagen i `docker-compose.yml` är låst med en digest (`@sha256:…`), så `pull` hämtar bara just den versionen. För att uppgradera, byt digesten mot den som visas av `docker pull docker.io/pissmyran/klarsprak:1 && docker image inspect --format '{{index .RepoDigests 0}}' docker.io/pissmyran/klarsprak:1` (med Podman: byt `docker` mot `podman`), eller ta bort `@sha256:…` för att följa taggen.
 - **Versioner:** taggarna följer semver. `1` ger alla uppdateringar inom version 1, `1.0` bara rättningar och `1.0.0` exakt en version. Ändringar beskrivs i changeloggen nedan.
 
 ## HTTPS och publicering på internet
