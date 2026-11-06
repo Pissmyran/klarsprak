@@ -62,6 +62,8 @@ CodeRabbit inherits shared review settings from `pissmyran/coderabbit`. The repo
 
 Questions and ideas go to [Discussions](https://github.com/pissmyran/.github/discussions), bugs and suggestions as issues here. Read [CONTRIBUTING.md](https://github.com/pissmyran/.github/blob/main/CONTRIBUTING.md) before opening a pull request. Report security problems privately through the Security tab.
 
+**Publishing the Docker image:** `.github/workflows/docker.yml` takes the Docker Hub namespace from the repository variable `DOCKERHUB_USERNAME`, the image name from the GitHub repository name, and the token from the secret `DOCKERHUB_TOKEN` (the token lives in the `release` environment). If the variable is not set, the run stops at once with a clear error, before anything is built or published. The GitHub release already exists by then: set the variable and re-run the workflow, which pushes the exact version and every moving tag it is entitled to. The moving tags (`minor`, `major`, `latest`) are only moved by the newest stable release they stand for: a prerelease moves none, and re-running an older release moves only those of the `minor` and `major` tags of its own line for which it is still the newest (never `latest`). A version without a `v` release tag on the commit being published moves no moving tag. The release tags are looked up again before and after each moving-tag push; if the lookup fails, or a newer release appears meanwhile, the run fails and moving tags already pushed stay as they are, so inspect them before recovering. A missed release (a replaced `Release` run) is recovered as described in [operations](operations.md).
+
 ## License
 
 MIT, see [LICENSE](../../LICENSE).
