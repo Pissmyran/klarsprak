@@ -65,7 +65,7 @@ If you do not want values such as passwords in the compose file, put them as `NA
 
 - All data lives in the volume mounted at `/data`: the database (SQLite) with terms and suggestions.
 - **Back up:** `docker compose stop`, copy the volume and run `docker compose start`. The volume's location is shown with `docker volume inspect <folder>_klarsprak-data`.
-- **Update:** `docker compose pull && docker compose up -d`. Database migrations run automatically at start.
+- **Update:** `docker compose pull && docker compose up -d`. Database migrations run automatically at start. The image in `docker-compose.yml` is pinned with a digest (`@sha256:…`), so `pull` only fetches that exact version. To upgrade, replace the digest with the one shown by `docker buildx imagetools inspect docker.io/pissmyran/klarsprak:1`, or remove `@sha256:…` to follow the tag.
 - **Versions:** the tags follow semver. `1` gives every update within version 1, `1.0` only fixes and `1.0.0` exactly one version. Changes are described in the changelog below.
 
 ## HTTPS and publishing on the internet

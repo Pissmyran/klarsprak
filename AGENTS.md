@@ -21,6 +21,7 @@ Båda krävs före push.
 - **Routing:** behåll att Workern går först (`run_worker_first`); den styr värdnamn, admin, SEO och säkerhetshuvuden. `/admin` släpps igenom till de statiska filerna, som serverar `admin.html` där; skriv inte om den till `/admin.html`.
 - **Ett förslag** publiceras aldrig utan granskningssteget.
 - **Dokumentationen** publiceras också under `/docs` av appens egen Worker: Workers Builds kör `node tools/render.mjs - build && (sh tools/docs-cloudflare.sh build/public || echo "docs skipped")`, och Workern ger sajtens inline-skript CSP-noncen (`isDocsPath` i `src/index.js`).
+- **Docker-bild:** publiceras som `docker.io/pissmyran/klarsprak` av `.github/workflows/docker.yml`. `docker-compose.yml` låser den med tagg och digest; håll taggen, digesten, `docker/README.md` och `README.md` i synk.
 - **Release:** versionen finns i `package.json`.
 - **Extra noggrant:** inskick och Turnstile, admin-token, CSP och migreringar.
 
