@@ -62,6 +62,8 @@ CodeRabbit inherits shared review settings from `pissmyran/coderabbit`. The repo
 
 Questions and ideas go to [Discussions](https://github.com/pissmyran/.github/discussions), bugs and suggestions as issues here. Read [CONTRIBUTING.md](https://github.com/pissmyran/.github/blob/main/CONTRIBUTING.md) before opening a pull request. Report security problems privately through the Security tab.
 
+**Publishing the Docker image:** `.github/workflows/docker.yml` takes the Docker Hub namespace from the repository variable `DOCKERHUB_USERNAME` and the token from the secret `DOCKERHUB_TOKEN` (the token lives in the `release` environment). If the variable is not set, the run stops at once with a clear error, before anything is built or published. The GitHub release already exists by then: set the variable and re-run the workflow, which pushes all tags again.
+
 ## License
 
 MIT, see [LICENSE](../../LICENSE).
