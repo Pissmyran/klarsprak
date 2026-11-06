@@ -1,28 +1,27 @@
-# AGENTS.md – klarsprak
+# AGENTS.md
 
-En sajt som jämför vardagssvenska med juridiskt och myndighetsspråk, plus en Docker-bild för egen drift.
+Scope
+- Work only in this repo. Never read, change or open PRs against other repos.
+- Do exactly what is asked. No extra files, lines, steps or config.
+- Repo-specific rules: see REPO.md.
 
-Läs de gemensamma reglerna i början av varje session: [GOVERNANCE.md](https://raw.githubusercontent.com/pissmyran/.github/main/GOVERNANCE.md) och [SERVICES.md](https://raw.githubusercontent.com/pissmyran/.github/main/SERVICES.md). Läs [docs/architecture.md](docs/architecture.md) och [docs/operations.md](docs/operations.md) före större ändringar.
+Workflow
+- Never change workflows. Only Renovate and Dependabot may.
+- Never work around rulesets, checks or branch rules.
+- Ask before deviating from a tool's standard setup.
 
-## Kommandon
+Git and review
+- Squash merge, signed commits, auto-merge on.
+- A review conversation is resolved only after the comment is read in full and the flagged code is analyzed and fixed.
+- Nothing personal in code or docs. Generic placeholders only.
 
-```bash
-npm install && node --test
-npx wrangler deploy --dry-run
-```
+Reporting and context
+- Report only the result, and only when done or blocked. No progress updates, no recaps.
+- Never poll. Never subscribe to PR, CI or repository activity. Never read GitHub notifications.
+- React only to warnings, errors and security alerts. Ignore routine confirmations such as bot comments and merge or subscription notices.
+- Load only the tools, files and history the current task needs.
 
-Båda krävs före push.
-
-## Regler
-
-- **Ingång:** `src/index.js`. Hanterare: fetch. Bindningar: D1, Assets.
-- **API:** publika `/api/terms` och `/api/submit` (Turnstile) och en granskningskö i `/admin` med bearer-token.
-- **Routing:** behåll att Workern går först (`run_worker_first`); den styr värdnamn, admin, SEO och säkerhetshuvuden. `/admin` släpps igenom till de statiska filerna, som serverar `admin.html` där; skriv inte om den till `/admin.html`.
-- **Ett förslag** publiceras aldrig utan granskningssteget.
-- **Dokumentationen** publiceras också under `/docs` av appens egen Worker: Workers Builds kör `node tools/render.mjs - build && (sh tools/docs-cloudflare.sh build/public || echo "docs skipped")`, och Workern ger sajtens inline-skript CSP-noncen (`isDocsPath` i `src/index.js`).
-- **Release:** versionen finns i `package.json`.
-- **Extra noggrant:** inskick och Turnstile, admin-token, CSP och migreringar.
-
-## CodeRabbit
-
-`.coderabbit.yaml` ärver `pissmyran/coderabbit` och innehåller repots riskområden, testvägledning, svensk/engelsk dokumentationsmappning och länkar till relaterade tjänsterepon. Verifiera den upplösta konfigurationen och åtkomsten till länkade repon enligt [docs/operations.md](docs/operations.md#coderabbit).
+Language
+- Code, commits, PRs, labels: English.
+- Documentation: English first, Swedish copy in /sv.
+- Talk to the owner in Swedish.

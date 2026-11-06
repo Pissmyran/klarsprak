@@ -8,7 +8,7 @@ The image contains the whole website and the terms already published. You do not
 
 ## Getting started
 
-The image is on Docker Hub as `docker.io/driftaegis/klarsprak`. The compose file below pulls it from there, so you neither clone the repo nor build anything.
+The image is on Docker Hub as `docker.io/pissmyran/klarsprak`. The compose file below pulls it from there, so you neither clone the repo nor build anything.
 
 1. **Install Docker.** On Windows and Mac: [Docker Desktop](https://www.docker.com/products/docker-desktop/). On Linux: the `docker.io` package (Debian/Ubuntu) or equivalent. Podman works too.
 2. **Create a folder** with a file in it named `docker-compose.yml`. Paste the content below.
@@ -19,7 +19,7 @@ The image is on Docker Hub as `docker.io/driftaegis/klarsprak`. The compose file
 ```yaml
 services:
   klarsprak:
-    image: docker.io/driftaegis/klarsprak:1
+    image: docker.io/pissmyran/klarsprak:1
     restart: unless-stopped
     ports:
       - "8787:8787"
@@ -48,6 +48,11 @@ The review queue is at `/admin`. It asks for `ADMIN_TOKEN`.
 | `TURNSTILE_SECRET` | For suggestions | – | Secret key for Turnstile. |
 | `TURNSTILE_HOSTNAMES` | No | `PUBLIC_HOST` | Comma-separated host names the Turnstile answer may come from. |
 | `RATE_LIMIT_KEY` | No | `ADMIN_TOKEN` | Key for hashing visitors' IP addresses in the rate limiting. |
+| `ALIAS_HOST` | No | – | A second host name (for example a spelling with å, ä or ö) that is forwarded to `PUBLIC_HOST`. |
+| `THEME_KEY_PREFIX` | No | `klarsprak` | Names the browser storage key and cookie for the theme choice. |
+| `THEME_COOKIE_DOMAIN` | No | – | Shares the theme cookie with sibling sites under the same parent domain. |
+| `SITE_FAMILY` | No | `Skog` | Label for the `forest` theme. |
+| `RELATED_SITE_HTML` | No | – | Optional HTML paragraph on `/varfor` pointing to a related site. |
 | `PORT` | No | `8787` | The port inside the container. |
 
 Turnstile keys are created in the Cloudflare dashboard under **Turnstile → Add site**. Use the same host name as `PUBLIC_HOST`.
@@ -60,7 +65,7 @@ If you do not want values such as passwords in the compose file, put them as `NA
 
 - All data lives in the volume mounted at `/data`: the database (SQLite) with terms and suggestions.
 - **Back up:** `docker compose stop`, copy the volume and run `docker compose start`. The volume's location is shown with `docker volume inspect <folder>_klarsprak-data`.
-- **Update:** `docker compose pull && docker compose up -d`. Database migrations run automatically at start.
+- **Update:** `docker compose pull && docker compose up -d`. Database migrations run automatically at start. The image in `docker-compose.yml` is pinned with a digest (`@sha256:…`), so `pull` only fetches that exact version. To upgrade, replace the digest with the one shown by `docker pull docker.io/pissmyran/klarsprak:1 && docker image inspect --format '{{index .RepoDigests 0}}' docker.io/pissmyran/klarsprak:1` (with Podman, use `podman` instead of `docker`), or remove `@sha256:…` to follow the tag.
 - **Versions:** the tags follow semver. `1` gives every update within version 1, `1.0` only fixes and `1.0.0` exactly one version. Changes are described in the changelog below.
 
 ## HTTPS and publishing on the internet
@@ -70,8 +75,8 @@ The container speaks plain HTTP on port 8787. Put it behind a reverse proxy that
 ## Technical overview
 
 - **Runtime:** Klarspråk is written as a Cloudflare Worker. In the container it runs in `workerd`, the same runtime Cloudflare uses, through `wrangler dev --local` (Miniflare). The D1 database becomes a local SQLite file under `/data/v3/d1/`.
-- **Start:** the entrypoint copies a read-only template to `/srv/klarsprak`, fills in `PUBLIC_HOST` and the Turnstile key, runs pending D1 migrations and starts the server. Secrets are passed to wrangler through a private env file (permissions 600) and are never baked into the image.
-- **The image** is based on `node:24-trixie-slim` (Node LTS on Debian stable), runs as the `node` user and has a healthcheck against `/`. It only contains source code with placeholders; your values are filled in when the container starts.
+- **Start:** the entrypoint renders the source to `/srv/site` with the values from the container environment, runs pending D1 migrations and starts the server. Secrets are passed to wrangler through a private env file (permissions 600) and are never baked into the image.
+- **The image** is based on the official `node` image, `trixie-slim` variant (Debian stable). The exact Node version is set in the `Dockerfile`, so an already published image may be on an older version, runs as the `node` user and has a healthcheck against `/`. It only contains source code with placeholders; your values are filled in when the container starts.
 - **Security:** responses get a strict CSP, HSTS and the other security headers from the app. The admin API requires `Authorization: Bearer <ADMIN_TOKEN>`, and the token is compared in constant time. Suggestions require Turnstile and are rate limited per hashed IP.
 - **Limits:** `wrangler dev` is a development server that runs one process on one machine. That is plenty for a website with normal traffic, but gives neither Cloudflare's automatic scaling nor its global distribution.
 - **Troubleshooting:** `docker compose logs -f`. Health status shows with `docker compose ps`.
