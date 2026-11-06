@@ -1,9 +1,21 @@
 # Security Policy
 
-## Supported Versions
+## Reporting a vulnerability
 
-Security fixes are made in the latest release only (see [CHANGELOG.md](CHANGELOG.md)). For the Docker image, use the major tag shown in the documentation (currently `1`) or the newest `X.Y.Z` to receive them. A major tag only follows its own major version, so when a new major release is published, move to its tag. If your Compose file pins the image by digest (`:1@sha256:...`), update the digest for each release, because a digest pin does not follow later releases of the tag.
+Do not open a public issue for a vulnerability.
 
-## Reporting a Vulnerability
+Report it privately through GitHub:
 
-Report security problems privately through the Security tab of this repository (a private security advisory). Do not open a public issue, and never include secrets or tokens in a report.
+1. Open the Security tab of this repository.
+2. Click "Report a vulnerability".
+3. Describe the problem and how to reproduce it.
+
+Reports are handled by a single maintainer on a best-effort basis. There is no guaranteed response time.
+
+## Supported versions
+
+Only the latest release and the default branch receive security fixes.
+
+## Scope
+
+Vulnerabilities in this repository's own code and configuration. Problems in third-party dependencies should be reported to those projects.
