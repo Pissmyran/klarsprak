@@ -23,6 +23,16 @@ Also try the flows by hand when a change touches routing, suggestions or admin.
 
 Production is deployed from a rendered copy, either from your computer or with Workers Builds when a PR is merged to `main`; see the [home page](index.md).
 
+## Publishing the Docker image
+
+`.github/workflows/docker.yml` builds and publishes the image when a version tag (`v1.2.3`) is pushed, or when `release.yml` calls it.
+
+- **Names:** the Docker Hub namespace comes from the repository variable `DOCKERHUB_USERNAME` and the repository name from GitHub (`github.event.repository.name`). Neither is written in the workflow. The image is `docker.io/<DOCKERHUB_USERNAME>/<repo>`.
+- **Token:** the secret `DOCKERHUB_TOKEN` lives in the `release` environment.
+- **Missing variable:** the run stops at once with a clear error, before anything is built or published. The GitHub release already exists by then. Set the variable and re-run the workflow.
+- **Tags:** the exact version is pushed first. The moving tags (`minor`, `major`, `latest`) are only moved by the newest stable release they stand for; an older version or a prerelease moves none. A failed push of one moving tag does not stop the others but fails the job, and a re-run pushes all tags again.
+- **Concurrency:** each tag has its own run, and no run is cancelled.
+
 ## Migrations
 
 Workers Builds does not run the D1 migrations, so they are run by hand from a rendered copy:
