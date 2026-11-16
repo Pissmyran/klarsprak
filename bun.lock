@@ -5,7 +5,7 @@
     "": {
       "name": "klarsprak",
       "devDependencies": {
-        "wrangler": "^4.161.0",
+        "wrangler": "^4.162.0",
       },
     },
   },
