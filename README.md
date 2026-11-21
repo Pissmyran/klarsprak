@@ -1,3 +1,5 @@
+> Guide: [AI- och Copilot-inställningar på GitHub](https://github.com/pissmyran/.github/blob/main/public/ai-och-copilot.md) · [English](https://github.com/pissmyran/.github/blob/main/public/eng/ai-and-copilot.md)
+
 # Klarspråk
 
 **Dokumentation:** [pissmyran.github.io/klarsprak](https://pissmyran.github.io/klarsprak/) – start, dokumentation och Docker på en sida med sök.
