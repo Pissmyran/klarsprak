@@ -4,7 +4,7 @@
 # `wrangler dev --local`; D1 is a SQLite file under /data, so keep that
 # directory on a volume. The source has only placeholders; the entrypoint fills
 # them in from the container environment with tools/render.mjs.
-FROM node:26.13.1-trixie-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc
+FROM node:26.13.1-trixie-slim@sha256:abe7e5a82b61a8ef67b315b85497c9e65173387ccf2f4a029248184b8e020be5
 
 ENV NODE_ENV=production \
     WRANGLER_SEND_METRICS=false \
